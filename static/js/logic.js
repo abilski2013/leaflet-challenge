@@ -13,10 +13,19 @@ function createMap(earthquakes, lines) {
     id: "mapbox.dark",
     accessToken: API_KEY
     });
+    
+    var outdoors = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/outdoors-v9/tiles/256/{z}/{x}/{y}?access_token={accessToken}", {
+    attribution: "Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"http://mapbox.com\">Mapbox</a>",
+    maxZoom: 15,
+    id: "mapbox.outdoors",
+    accessToken: API_KEY
+    });  
+       
 
     var baseMaps = {
     "Light Map": lightmap,
-    "Dark Map": darkmap
+    "Dark Map": darkmap,
+    "Outdoor Map": outdoors
     };    
     
     var overlayMaps = {
@@ -31,7 +40,7 @@ function createMap(earthquakes, lines) {
     });    
     
     L.control.layers(baseMaps, overlayMaps, {
-        collapsed: false
+        collapsed: true
     }).addTo(map);
     
     var legend = L.control({position: 'bottomright'});
@@ -67,7 +76,7 @@ function createCircles(data) {
     console.log(data);
     
     function markerSize(magnitude) {
-        return magnitude * 20000;
+        return magnitude * 5;
     } 
     
     function color(magnitude) {
@@ -81,7 +90,7 @@ function createCircles(data) {
     earthquakes = []
     
     for (var i=0; i < data.features.length; i++) {
-        var quake = L.circle([data.features[i].geometry.coordinates[1], data.features[i].geometry.coordinates[0]], {
+        var quake = L.circleMarker([data.features[i].geometry.coordinates[1], data.features[i].geometry.coordinates[0]], {
             fillOpacity: .75,
             color: "white",
             weight: .5,
